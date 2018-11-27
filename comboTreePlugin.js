@@ -94,7 +94,7 @@
 
     ComboTree.prototype.createSourceItemHTML = function (sourceItem) {
         var itemHtml = "",
-            isThereSubs = sourceItem.hasOwnProperty("subs");
+            isThereSubs = sourceItem.hasOwnProperty("subs") && !jQuery.isEmptyObject(sourceItem.subs);
         
         itemHtml = '<LI class="ComboTreeItem' + (isThereSubs?'Parent':'Chlid') + '"> ';
         
