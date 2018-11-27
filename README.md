@@ -17,6 +17,7 @@ ComboTree is a jQuery Plugin which is a combobox item with tree structured data 
 ##Configurations:
 - isMultiple: {True/False} | decide if it is multiple selection behaviour or single
 - source: {JSON Data Array} | takes source of combobox dropdown menu as a JSON array.
+- expandAll: {True/False} | Whether to expand the tree or not
 
 ##Usage
 
@@ -24,7 +25,8 @@ There should be an input element to apply and a JSON Data source.
 
 	comboTree1 = $('#justAnInputBox').comboTree({
 		source : SampleJSONData,
-		isMultiple: true
+		isMultiple: true,
+		expandAll: false
 	});
 
 	// Array, One title/id, or False value return
@@ -47,6 +49,7 @@ Three parameter are needed: id, title and subs.
 	}, {
 	    id: 1,
 	    title: 'choice 2',
+	    preselect: true,
 	    subs: [
 	        {
 	            id: 10,
