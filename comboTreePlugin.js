@@ -12,7 +12,8 @@
     var comboTreePlugin = 'comboTree',
         defaults = {
             source: [], 
-            isMultiple: false
+            isMultiple: false,
+            expandAll: false,
         };
 
     // The actual plugin constructor
@@ -58,6 +59,13 @@
         this._selectedItems = [];
 
         this.bindings();
+        
+        // trigger click event on all preselected items
+        if(this.options.isMultiple)
+            $(this._elemItems).children('span.comboTreeItemTitle').children('input:checked').parent().click();
+        else
+            $(this._elemItems).children('span.comboTreeItemSelected').click();
+        
     };
 
 
@@ -71,12 +79,12 @@
     };
 
     ComboTree.prototype.createSourceHTML = function () {
-        var htmlText = this.createSourceSubItemsHTML(this.options.source);
+        var htmlText = this.createSourceSubItemsHTML(this.options.source, true);
         return htmlText;
     };
 
-    ComboTree.prototype.createSourceSubItemsHTML = function (subItems) {
-        var subItemsHtml = '<UL>';
+    ComboTree.prototype.createSourceSubItemsHTML = function (subItems, isroot) {
+        var subItemsHtml = '<UL' + (this.options.expandAll || isroot?'':' style="display:none" ') +'>';
         for (var i=0; i<subItems.length; i++){
             subItemsHtml += this.createSourceItemHTML(subItems[i]);
         }
@@ -91,15 +99,19 @@
         itemHtml = '<LI class="ComboTreeItem' + (isThereSubs?'Parent':'Chlid') + '"> ';
         
         if (isThereSubs)
-            itemHtml += '<span class="comboTreeParentPlus">&minus;</span>';
+            itemHtml += '<span class="comboTreeParentPlus">' + (this.options.expandAll ? '&minus;' : '+' ) + '</span>';
 
         if (this.options.isMultiple)
-            itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle"><input type="checkbox">' + sourceItem.title + '</span>';
+            itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle">' +
+                            '<input type="checkbox"' + (sourceItem.preselect?' checked="checked"':'') + '>' + sourceItem.title +
+                        '</span>';
         else
-            itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle">' + sourceItem.title + '</span>';
+            itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle' + (sourceItem.preselect?' comboTreeItemSelected':'') + '">' + 
+                            sourceItem.title + 
+                        '</span>';
 
         if (isThereSubs)
-            itemHtml += this.createSourceSubItemsHTML(sourceItem.subs);
+            itemHtml += this.createSourceSubItemsHTML(sourceItem.subs, false);
 
         itemHtml += '</LI>';
         return itemHtml;
@@ -114,12 +126,19 @@
         this._elemArrowBtn.on('click', function(e){
             e.stopPropagation();
             _this.toggleDropDown();
+            return false;
         });
         this._elemInput.on('click', function(e){
             e.stopPropagation();
             if (!_this._elemDropDownContainer.is(':visible'))
                 _this.toggleDropDown();
         });
+        if (_this.options.isMultiple) {
+            this._elemInput.on('focus', function (e) {
+                e.preventDefault();
+                $(this).blur();
+            });
+        }
         this._elemItems.on('click', function(e){
             e.stopPropagation();
             if ($(this).hasClass('ComboTreeItemParent')){
