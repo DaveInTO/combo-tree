@@ -14,6 +14,7 @@
             source: [], 
             isMultiple: false,
             expandAll: false,
+            parentIncludesChilds: true
         };
 
     // The actual plugin constructor
@@ -260,6 +261,8 @@
         this.closeDropDownMenu();
     };
     ComboTree.prototype.multiItemClick = function (ctItem) {
+        if($(ctItem).find("input").prop('disabled'))
+            return;
         this._selectedItem = {
             id: $(ctItem).attr("data-id"),
             title: $(ctItem).text()
@@ -269,10 +272,17 @@
         if (index){
             this._selectedItems.splice(parseInt(index), 1);
             $(ctItem).find("input").prop('checked', false);
+            if(this.options.parentIncludesChilds)
+                $(ctItem).next('ul').find(':checkbox').prop("disabled", false).prop('checked', false);
         }
         else {
             this._selectedItems.push(this._selectedItem);
             $(ctItem).find("input").prop('checked', true);
+            if(this.options.parentIncludesChilds) {
+                $(ctItem).next('ul').find(':checked').parent().click();
+                $(ctItem).next('ul').find(':checkbox').prop("checked", true);
+                $(ctItem).next('ul').find(':checkbox').prop("disabled", true);
+            }
         }
 
         this.refreshInputVal();
