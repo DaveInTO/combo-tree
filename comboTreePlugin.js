@@ -272,16 +272,18 @@
         if (index){
             this._selectedItems.splice(parseInt(index), 1);
             $(ctItem).find("input").prop('checked', false);
-            if(this.options.parentIncludesChilds)
-                $(ctItem).next('ul').find(':checkbox').prop("disabled", false).prop('checked', false);
+            if(this.options.parentIncludesChilds) {
+                $(ctItem).next('ul').find(':checkbox').prop('disabled', false).prop('checked', false);
+                $(ctItem).parents('.ComboTreeItemParent').not(':has(input:checked)').children('.comboTreeItemTitle').find(':checkbox').prop('indeterminate', false);
+            }
         }
         else {
             this._selectedItems.push(this._selectedItem);
-            $(ctItem).find("input").prop('checked', true);
+            $(ctItem).find("input").prop('indeterminate',false).prop('checked', true);
             if(this.options.parentIncludesChilds) {
-                $(ctItem).next('ul').find(':checked').parent().click();
-                $(ctItem).next('ul').find(':checkbox').prop("checked", true);
-                $(ctItem).next('ul').find(':checkbox').prop("disabled", true);
+                $(ctItem).next('ul').find(':checked').not(':disabled').parent().click();
+                $(ctItem).next('ul').find(':checkbox').prop('indeterminate',false).prop('checked', true).prop('disabled', true);
+                $(ctItem).parents('.ComboTreeItemParent').children('.comboTreeItemTitle').find(':checkbox').not(':checked').prop('indeterminate', true);
             }
         }
 
