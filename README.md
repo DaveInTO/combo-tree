@@ -2,7 +2,7 @@
 
 ComboTree is a jQuery Plugin which is a combobox item with tree structured data list and multi/single selection options and more. It has been developed to manage large amount of choices and multi selection property. 
 
-##Features:
+## Features:
 - Tree structured data list in combobox dropdown menu
 - Multi/Single selection optional
 - It returns selection(s) data as Title/Id array
@@ -10,17 +10,17 @@ ComboTree is a jQuery Plugin which is a combobox item with tree structured data 
 - JSON Data source
 - Key Controls
  
-##Dependencies:
+## Dependencies:
 - jQuery
 - icontains.js (filtering. It can be found in repository)
  
-##Configurations:
+## Configurations:
 - isMultiple: {True/False} | Whether it is multiple selection behaviour or single.
 - source: {JSON Data Array} | Takes source of combobox dropdown menu as a JSON array (see Sample).
 - expandAll: {True/False} | Whether to expand the tree or not.
 - parentIncludesChilds: {True/False} | Whether selecting a parent implicitely means childs are selected as well and thus cannot be selected independently (only for multi select).
 
-##Usage
+## Usage
 
 There should be an input element to apply and a JSON Data source.
 
@@ -45,7 +45,7 @@ There should be an input element to apply and a JSON Data source.
 	
 
 
-##Sample JSON DATA
+## Sample JSON DATA
 
 Three parameter are needed: id, title and subs.
 
@@ -109,6 +109,6 @@ Three parameter are needed: id, title and subs.
 	];
 
 
-##User Friendly
+## User Friendly
 
 Key controls, well designed and esasy-read code structure, definitions and clear variable names are choosen to be read and used as much as comfortable I could.
