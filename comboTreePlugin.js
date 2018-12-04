@@ -44,6 +44,9 @@
         this._elemInput.wrap('<div id="'+ this.comboTreeId + 'InputWrapper" class="comboTreeInputWrapper"></div>');
         this._elemWrapper = $('#' + this.comboTreeId + 'Wrapper');
 
+        this._elemInput.attr('tabindex',"-1");
+        this._elemWrapper.attr('tabindex',"0");
+        
         this._elemArrowBtn = $('<button id="' + this.comboTreeId + 'ArrowBtn" class="comboTreeArrowBtn"><span class="comboTreeArrowBtnImg">▼</span></button>');
         this._elemInput.after(this._elemArrowBtn);
         this._elemWrapper.append('<div id="' + this.comboTreeId + 'DropDownContainer" class="comboTreeDropDownContainer"><div class="comboTreeDropDownContent"></div>');
@@ -137,7 +140,8 @@
         if (_this.options.isMultiple) {
             this._elemInput.on('focus', function (e) {
                 e.preventDefault();
-                $(this).blur();
+                this.blur();
+                _this._elemWrapper.focus();
             });
         }
         this._elemItems.on('click', function(e){
@@ -159,7 +163,7 @@
         });
 
         // KEY BINDINGS
-        this._elemInput.on('keyup', function(e) {
+        this._elemWrapper.on('keyup', function(e) {
             e.stopPropagation();
 
             switch (e.keyCode) {
@@ -175,7 +179,7 @@
                     break;
             }
         });
-        this._elemInput.on('keydown', function(e) {
+        this._elemWrapper.on('keydown', function(e) {
             e.stopPropagation();
 
             switch (e.keyCode) {
@@ -188,14 +192,14 @@
                 e.preventDefault(); 
                 _this.dropDownInputKeyToggleTreeControl(e.keyCode - 38);
                 break;
-            case 13:
+            case 13: case 32:
                 if (_this.options.isMultiple)
                     _this.multiItemClick(_this._elemHoveredItem);
                 else
                     _this.singleItemClick(_this._elemHoveredItem);
                 e.preventDefault(); 
                 break;
-            default: 
+            default:
                 if (_this.options.isMultiple)
                     e.preventDefault();
         }
