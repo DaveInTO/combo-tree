@@ -12,6 +12,7 @@
     var comboTreePlugin = 'comboTree',
         defaults = {
             source: [], 
+            preselected: [], 
             isMultiple: false,
             expandAll: false,
             parentIncludesChilds: true
@@ -97,25 +98,30 @@
     }
 
     ComboTree.prototype.createSourceItemHTML = function (sourceItem) {
+        sourceItem.preselect=false;
+        if (this.options.preselected.indexOf(parseInt(sourceItem.id,10)) > -1)  {
+            sourceItem.preselect=true;
+        }
+
         var itemHtml = "",
-            isThereSubs = sourceItem.hasOwnProperty("subs") && !jQuery.isEmptyObject(sourceItem.subs);
-        
+            isThereSubs = sourceItem.hasOwnProperty("children") && !jQuery.isEmptyObject(sourceItem.children);
+
         itemHtml = '<LI class="ComboTreeItem' + (isThereSubs?'Parent':'Chlid') + '"> ';
-        
+
         if (isThereSubs)
-            itemHtml += '<span class="comboTreeParentPlus">' + (this.options.expandAll ? '&minus;' : '+' ) + '</span>';
+            itemHtml += '<span class="comboTreeParentPlus">' + (this.options.expandAll ? '&npsb;' : '+' ) + '</span>';
 
         if (this.options.isMultiple)
             itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle">' +
-                            '<input type="checkbox"' + (sourceItem.preselect?' checked="checked"':'') + '>' + sourceItem.title +
-                        '</span>';
+                '<input type="checkbox"' + (sourceItem.preselect?' checked="checked"':'') + '>' + sourceItem.name +
+                '</span>';
         else
             itemHtml += '<span data-id="' + sourceItem.id + '" class="comboTreeItemTitle' + (sourceItem.preselect?' comboTreeItemSelected':'') + '">' + 
-                            sourceItem.title + 
-                        '</span>';
+                sourceItem.name + 
+                '</span>';
 
         if (isThereSubs)
-            itemHtml += this.createSourceSubItemsHTML(sourceItem.subs, false);
+            itemHtml += this.createSourceSubItemsHTML(sourceItem.children, false);
 
         itemHtml += '</LI>';
         return itemHtml;
@@ -232,12 +238,12 @@
             if ($(subMenu).is(':visible'))
                 $(item).children('span.comboTreeParentPlus').html("+");
             else
-                $(item).children('span.comboTreeParentPlus').html("&minus;");
+                $(item).children('span.comboTreeParentPlus').html("&npsb;");
 
             $(subMenu).slideToggle(50);
         }
         else if (direction == 1 && !$(subMenu).is(':visible')){
-                $(item).children('span.comboTreeParentPlus').html("&minus;");
+                $(item).children('span.comboTreeParentPlus').html("&npsb;");
                 $(subMenu).slideDown(50);
         }
         else if (direction == -1){
@@ -258,7 +264,7 @@
     ComboTree.prototype.singleItemClick = function (ctItem) {
         this._selectedItem = {
             id: $(ctItem).attr("data-id"),
-            title: $(ctItem).text()
+            name: $(ctItem).text()
         };
 
         this.refreshInputVal();
@@ -269,7 +275,7 @@
             return;
         this._selectedItem = {
             id: $(ctItem).attr("data-id"),
-            title: $(ctItem).text()
+            name: $(ctItem).text()
         };
 
         var index = this.isItemInArray(this._selectedItem, this._selectedItems);
@@ -297,7 +303,7 @@
     ComboTree.prototype.isItemInArray = function (item, arr) {
 
         for (var i=0; i<arr.length; i++)
-            if (item.id == arr[i].id && item.title == arr[i].title)
+            if (item.id == arr[i].id && item.name == arr[i].name)
                 return i + "";
 
         return false;
@@ -308,13 +314,13 @@
         
         if (this.options.isMultiple) {
             for (var i=0; i<this._selectedItems.length; i++){
-                tmpTitle += this._selectedItems[i].title;
+                tmpTitle += this._selectedItems[i].name;
                 if (i<this._selectedItems.length-1)
                     tmpTitle += ", ";
             }
         }
         else {
-            tmpTitle = this._selectedItem.title;
+            tmpTitle = this._selectedItem.name;
         }
 
         this._elemInput.val(tmpTitle);
@@ -396,12 +402,12 @@
         if (this.options.isMultiple && this._selectedItems.length>0){
             var tmpArr = [];
             for (i=0; i<this._selectedItems.length; i++)
-                tmpArr.push(this._selectedItems[i].title);
+                tmpArr.push(this._selectedItems[i].name);
 
             return tmpArr;
         }
         else if (!this.options.isMultiple && this._selectedItem.hasOwnProperty('id')){
-            return this._selectedItem.title;
+            return this._selectedItem.name;
         }
         return false;
     }
